@@ -18,6 +18,12 @@ sap.ui.define([
 		onIncluir: function(){
 			var oDialog = this._criarDialog();
 			var oModel = this.getOwnerComponent().getModel();
+			var oViewModel = this.getModel("view");
+			
+			oViewModel.setData({
+				titulo: "Inserir Novo Centro de Custo",
+				msgSalvar: "Centro de custo inserido com sucesso!"
+			});
 			
 			oDialog.unbindElement();
 			oDialog.setEscapeHandler(function(oPromise){
@@ -42,6 +48,12 @@ sap.ui.define([
 			var oDialog = this._criarDialog();
 			var oTable = this.byId("tableCentroCusto");
 			var nIndex = oTable.getSelectedIndex();
+			var oViewModel = this.getModel("view");
+			
+			oViewModel.setData({
+				titulo: "Editar Centro de Custo",
+				msgSalvar: "Centro de custo alterado com sucesso!"
+			});
 			
 			if(nIndex === -1){
 				MessageBox.information("Selecione um Centro de Custo da tabela!");
@@ -92,6 +104,7 @@ sap.ui.define([
 		onSaveDialog: function(){
 			var oView = this.getView();
 			var oModel = this.getOwnerComponent().getModel();
+			var oViewModel = this.getModel("view");
 			
 			if(this._checarCampos(this.getView()) === true){
 				MessageBox.information("Preencha todos os campos obrigatórios!");
@@ -100,7 +113,7 @@ sap.ui.define([
 				oModel.submitChanges({
 				success: function(){
 					oModel.refresh(true);
-					MessageBox.success("Centro de custo inserido com sucesso!");
+					MessageBox.success(oViewModel.getData().msgSalvar);
 					oView.byId("CentroCustoDialog").close();
 					oView.byId("tableCentroCusto").clearSelection();
 				},
@@ -139,6 +152,10 @@ sap.ui.define([
 			} else{
 				return false; 
 			}
+		},
+		
+		getModel: function(sModel) {
+			return this.getOwnerComponent().getModel(sModel);
 		}
 	});
 });

@@ -3,7 +3,7 @@
    xmlns:core="sap.ui.core">
    <Dialog
 		id="CentroCustoDialog"
-		title="Gravar Centro de Custo"
+		title="{view>/titulo}"
 		class="sapUiSmallMargin">
    	
    		<VBox id="vBoxCentro" class="sapUiSmallMargin">
