@@ -11,11 +11,11 @@ sap.ui.define([
 		
 		onRefresh: function(){
 			var oModel = this.getOwnerComponent().getModel();
-			
 			oModel.refresh(true);
+			this.getView().byId("tableCentroCusto").clearSelection();
 		},
 		
-		onIncluir: function(){
+		onIncluirCentro: function(){
 			var oDialog = this._criarDialog();
 			var oModel = this.getOwnerComponent().getModel();
 			var oViewModel = this.getModel("view");
@@ -44,7 +44,7 @@ sap.ui.define([
 			oDialog.open();
 		},
 		
-		onEditar: function(){
+		onEditarCentro: function(){
 			var oDialog = this._criarDialog();
 			var oTable = this.byId("tableCentroCusto");
 			var nIndex = oTable.getSelectedIndex();
@@ -56,7 +56,7 @@ sap.ui.define([
 			});
 			
 			if(nIndex === -1){
-				MessageBox.information("Selecione um Centro de Custo da tabela!");
+				MessageBox.warning("Selecione um Centro de Custo da tabela!");
 				return;
 			}
 			
@@ -66,13 +66,13 @@ sap.ui.define([
 			oDialog.open();
 		},
 		
-		onRemover: function(){
+		onRemoverCentro: function(){
 			var that = this;
 			var oTable = this.byId("tableCentroCusto");
 			var nIndex = oTable.getSelectedIndex();
 			
 			if(nIndex === -1){
-				MessageBox.information("Selecione um Centro de Custo da tabela!");
+				MessageBox.warning("Selecione um Centro de Custo da tabela!");
 				return;
 			}
 			
@@ -107,7 +107,7 @@ sap.ui.define([
 			var oViewModel = this.getModel("view");
 			
 			if(this._checarCampos(this.getView()) === true){
-				MessageBox.information("Preencha todos os campos obrigatórios!");
+				MessageBox.warning("Preencha todos os campos obrigatórios!");
 				return;
 			} else{
 				oModel.submitChanges({
