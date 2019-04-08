@@ -6,12 +6,12 @@
 		title="{view>/titulo}"
 		class="sapUiSmallMargin">
    	
-   		<VBox id="vBoxCentro" class="sapUiSmallMargin">
+   		<VBox id="vBoxCentro" class="sapUiSmallMargin sapUiSizeCompact">
    			<Label text="Código:" labelFor="codigo"/>
-			<Input value="{Codigo}" id="codigo" required="true"/>
+			<Input value="{model>/Codigo}" id="codigo" required="true"/>
 			
 			<Label text="Descrição:" labelFor="descricao"/>
-			<Input value="{Descricao}" id="descricao" required="true"/>
+			<Input value="{model>/Descricao}" id="descricao" required="true"/>
 		</VBox>
    		
    		<buttons>

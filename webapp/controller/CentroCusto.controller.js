@@ -1,11 +1,19 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/m/MessageBox"
-], function(Controller, MessageBox) {
+	"sap/m/MessageBox",
+	"sap/ui/model/json/JSONModel",
+	"br/com/idxtecCentroCusto/services/Session"
+], function(Controller, MessageBox, JSONModel, Session) {
 	"use strict";
 
 	return Controller.extend("br.com.idxtecCentroCusto.controller.CentroCusto", {
 		onInit: function(){
+			var oJSONModel = new JSONModel();
+			
+			this._operacao = null;
+			this._sPath = null;
+
+			this.getOwnerComponent().setModel(oJSONModel, "model");
 			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 		},
 		
@@ -15,9 +23,10 @@ sap.ui.define([
 			this.getView().byId("tableCentroCusto").clearSelection();
 		},
 		
-		onIncluirCentro: function(){
+		onIncluir: function(){
 			var oDialog = this._criarDialog();
-			var oModel = this.getOwnerComponent().getModel();
+			var oTable = this.byId("tableCentroCusto");
+			var oJSONModel = this.getOwnerComponent().getModel("model");
 			var oViewModel = this.getModel("view");
 			
 			oViewModel.setData({
@@ -25,29 +34,36 @@ sap.ui.define([
 				msgSalvar: "Centro de custo inserido com sucesso!"
 			});
 			
-			oDialog.unbindElement();
+			this._operacao = "incluir";
+			
 			oDialog.setEscapeHandler(function(oPromise){
-				if(oModel.hasPendingChanges()){
-					oModel.resetChanges();
+				if(oJSONModel.hasPendingChanges()){
+					oJSONModel.resetChanges();
 				}
 			});
 			
-			var oContext = oModel.createEntry("/CentroCustos", {
-				properties: {
-					"Id": 0,
-					"Codigo": "",
-					"Descricao": ""
-				}
-			});
+			var oNovoCaracteristica = {
+				"Id": 0,
+				"Codigo": "",
+				"Descricao": "",
+				"Empresa" : Session.get("EMPRESA_ID"),
+				"Usuario": Session.get("USUARIO_ID"),
+				"EmpresaDetails": { __metadata: { uri: "/Empresas(" + Session.get("EMPRESA_ID") + ")"}},
+				"UsuarioDetails": { __metadata: { uri: "/Usuarios(" + Session.get("USUARIO_ID") + ")"}}
+			};
 			
-			oDialog.setBindingContext(oContext);
+			oJSONModel.setData(oNovoCaracteristica);
+			
+			oTable.clearSelection();
 			oDialog.open();
 		},
 		
-		onEditarCentro: function(){
+		onEditar: function(){
 			var oDialog = this._criarDialog();
 			var oTable = this.byId("tableCentroCusto");
 			var nIndex = oTable.getSelectedIndex();
+			var oModel = this.getOwnerComponent().getModel();
+			var oJSONModel = this.getOwnerComponent().getModel("model");
 			var oViewModel = this.getModel("view");
 			
 			oViewModel.setData({
@@ -55,18 +71,27 @@ sap.ui.define([
 				msgSalvar: "Centro de custo alterado com sucesso!"
 			});
 			
+			this._operacao = "editar";
+			
 			if(nIndex === -1){
 				MessageBox.warning("Selecione um Centro de Custo da tabela!");
 				return;
 			}
 			
 			var oContext = oTable.getContextByIndex(nIndex);
+			this._sPath = oContext.sPath;
 			
-			oDialog.bindElement(oContext.sPath);
+			oModel.read(oContext.sPath, {
+				success: function(oData){
+					oJSONModel.setData(oData);
+				}
+			});
+			
+			oTable.clearSelection();
 			oDialog.open();
 		},
 		
-		onRemoverCentro: function(){
+		onRemover: function(){
 			var that = this;
 			var oTable = this.byId("tableCentroCusto");
 			var nIndex = oTable.getSelectedIndex();
@@ -94,34 +119,51 @@ sap.ui.define([
 				success: function(){
 					oModel.refresh(true);
 					oTable.clearSelection();
-				},
-				error: function(oError){
-					MessageBox.error(oError.responseText);
 				}
 			});
 		},
 		
 		onSaveDialog: function(){
-			var oView = this.getView();
-			var oModel = this.getOwnerComponent().getModel();
-			var oViewModel = this.getModel("view");
-			
-			if(this._checarCampos(this.getView()) === true){
+			if (this._checarCampos(this.getView())) {
 				MessageBox.warning("Preencha todos os campos obrigatórios!");
 				return;
-			} else{
-				oModel.submitChanges({
-				success: function(){
-					oModel.refresh(true);
-					MessageBox.success(oViewModel.getData().msgSalvar);
-					oView.byId("CentroCustoDialog").close();
-					oView.byId("tableCentroCusto").clearSelection();
-				},
-				error: function(oError){
-					MessageBox.error(oError.responseText);
-				}
-			});	
 			}
+			if(this._operacao === "incluir"){
+				this._createCentroCusto();
+				this.getView().byId("CentroCustoDialog").close();
+			} else if(this._operacao === "editar"){
+				this._updateCentroCusto();
+				this.getView().byId("CentroCustoDialog").close();
+			} 
+		},
+		
+		_getDados: function(){
+			var oJSONModel = this.getOwnerComponent().getModel("model");
+			var oDados = oJSONModel.getData();
+			
+			return oDados;
+		},
+		
+		_createCentroCusto: function(){
+			var oModel = this.getOwnerComponent().getModel();
+	
+			oModel.create("/CentroCustos", this._getDados(), {
+				success: function() {
+					MessageBox.success("Centro de Custo inserido com sucesso!");
+					oModel.refresh(true);
+				}
+			});
+		},
+		
+		_updateCentroCusto: function(){
+			var oModel = this.getOwnerComponent().getModel();
+			
+			oModel.update(this._sPath, this._getDados(), {
+				success: function(){
+					MessageBox.success("Centro de Custo alterado com sucesso!");
+					oModel.refresh(true);
+				}
+			});
 		},
 		
 		onCloseDialog: function(){

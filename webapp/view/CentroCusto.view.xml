@@ -56,9 +56,9 @@
 				<footer>
 					<Toolbar>
 						<ToolbarSpacer/>
-						<Button icon="sap-icon://add" id="incluir" text="Incluir novo" press="onIncluirCentro"/>
-						<Button icon="sap-icon://edit" id="editar" text="Editar" press="onEditarCentro"/>
-						<Button icon="sap-icon://delete" id="remover" text="Remover" press="onRemoverCentro"/>
+						<Button icon="sap-icon://add" id="incluir" text="Incluir novo" press="onIncluir"/>
+						<Button icon="sap-icon://edit" id="editar" text="Editar" press="onEditar"/>
+						<Button icon="sap-icon://delete" id="remover" text="Remover" press="onRemover"/>
 					</Toolbar>
 				</footer>
 			</Page>
