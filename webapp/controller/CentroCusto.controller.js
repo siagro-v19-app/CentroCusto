@@ -36,13 +36,7 @@ sap.ui.define([
 			
 			this._operacao = "incluir";
 			
-			oDialog.setEscapeHandler(function(oPromise){
-				if(oJSONModel.hasPendingChanges()){
-					oJSONModel.resetChanges();
-				}
-			});
-			
-			var oNovoCaracteristica = {
+			var oNovoCentro = {
 				"Id": 0,
 				"Codigo": "",
 				"Descricao": "",
@@ -52,7 +46,7 @@ sap.ui.define([
 				"UsuarioDetails": { __metadata: { uri: "/Usuarios(" + Session.get("USUARIO_ID") + ")"}}
 			};
 			
-			oJSONModel.setData(oNovoCaracteristica);
+			oJSONModel.setData(oNovoCentro);
 			
 			oTable.clearSelection();
 			oDialog.open();
