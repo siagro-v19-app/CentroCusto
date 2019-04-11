@@ -30,8 +30,7 @@ sap.ui.define([
 			var oViewModel = this.getModel("view");
 			
 			oViewModel.setData({
-				titulo: "Inserir Novo Centro de Custo",
-				msgSalvar: "Centro de custo inserido com sucesso!"
+				titulo: "Inserir Novo Centro de Custo"
 			});
 			
 			this._operacao = "incluir";
@@ -61,8 +60,7 @@ sap.ui.define([
 			var oViewModel = this.getModel("view");
 			
 			oViewModel.setData({
-				titulo: "Editar Centro de Custo",
-				msgSalvar: "Centro de custo alterado com sucesso!"
+				titulo: "Editar Centro de Custo"
 			});
 			
 			this._operacao = "editar";
