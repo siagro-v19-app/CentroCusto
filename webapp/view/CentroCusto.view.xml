@@ -11,12 +11,6 @@
 			<Page showHeader="false" class="sapUiContentPadding" enableScrolling="false">
 				<content>
 					<t:Table id="tableCentroCusto"
-						rows="{
-							path: '/CentroCustos',
-							sorter: {
-								path: 'Descricao'
-							}
-						}"
 						selectionMode="Single"
 						selectionBehavior="Row"
 						class="sapUiSizeCondensed"
@@ -27,7 +21,7 @@
 							<Toolbar>
 								<Title text="Lista de Centro de Custo"/>
 								<ToolbarSpacer/>
-								<SearchField placeholder="Pesquisar centro..." width="30%" search="filtraCentro"/>
+								<SearchField placeholder="Pesquisar descrição..." width="30%" search="filtraCentro"/>
 							</Toolbar>
 						</t:toolbar>
 						<t:columns>
